@@ -10,6 +10,7 @@ public class Game1 : Game
     GraphicsDeviceManager graphics;
     SpriteBatch spriteBatch;
     SpringOperations sO;
+    SimulationTest sT;
     EndPointTracker t1,t2;
     Spring s1, s2, s3;
     Rectangle r;
@@ -17,8 +18,10 @@ public class Game1 : Game
     Spring[] allSpring;
     Rectangle[] allRectangle;
     EndPointTracker[] allTracker;
-    double thyme;
-
+    double thyme, totalThyme;
+    int testCases = 30;
+    int currentCase = 0;
+    bool isInit = false;
 
     public Game1()
     {
@@ -32,13 +35,14 @@ public class Game1 : Game
         allSpring = new Spring[3];
         allRectangle = new Rectangle[3];
         allTracker = new EndPointTracker[2];
-        s1 = new Spring(new Vector2(100, 0), new Vector2(100, 150), 100, 20, 0.0f, 1f, 5, 0f);
+        s1 = new Spring(new Vector2(100, 0), new Vector2(100, 100), 100, 50, 0.0f, 1f, 2.5f, 0.5f);
         allSpring[0] = s1;
-        s2 = new Spring(new Vector2(100, 150), new Vector2(100, 300), 100, 20, 0.0f, 0.5f, 5, 0f);
+        s2 = new Spring(new Vector2(100, 100), new Vector2(100, 200), 100, 50, 0.0f, 1f, 2.5f, 0f);
         allSpring[1] = s2;
-        s3 = new Spring(new Vector2(200, 0), new Vector2(200, 300), 200, 20, 0.0f, 1f, 5, 0f);
+        s3 = new Spring(new Vector2(200, 0), new Vector2(250, 200), 200, 50, 0.0f, 1f, 5, 0.5f);
         allSpring[2] = s3;
         sO = new SpringOperations();
+        sT = new SimulationTest();
         t1 = new EndPointTracker(s3, new Dictionary<Vector3, int>());
         allTracker[0] = t1;
         t2 = new EndPointTracker(s2, new Dictionary<Vector3, int>());
@@ -66,13 +70,8 @@ public class Game1 : Game
         if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
             Exit();
 
-        foreach (Spring s in allSpring)
-        {
-            //s.SLS(gameTime);
-            //s.SLSMkII(gameTime);
-        }
-        s3.SLSMkII(thyme);
-        sO.MultiSpring(thyme, s1, s2);
+        allSpring[2].SLSMkII(thyme);
+        sO.MultiSpring(thyme, allSpring[0], allSpring[1]);
         foreach(EndPointTracker e in allTracker) e.Track();
 
 
@@ -88,18 +87,26 @@ public class Game1 : Game
                 r = new Rectangle((int)allSpring[i].beginPointX, (int)allSpring[i].beginPointY, (int)allSpring[i].radius, (int)(allSpring[i].stretch + allSpring[i].restLength));
                 allRectangle[i] = r;
             }
-            r = new Rectangle((int)allSpring[2].beginPointX, (int)allSpring[2].beginPointY, (int)allSpring[2].radius, (int)(allSpring[2].stretch + allSpring[2].restLength));
-            allRectangle[2] = r;
         }
-        if(gameTime.TotalGameTime.Milliseconds%500 == 0)
+        r = new Rectangle((int)allSpring[2].beginPointX, (int)allSpring[2].beginPointY, (int)allSpring[2].radius, (int)(allSpring[2].stretch + allSpring[2].restLength));
+        allRectangle[2] = r;
+
+        if (currentCase <= testCases)
         {
-            for (int i = 1; i <= allSpring.Length; i++)
-            {
-                Console.Write("s{0} bPoint ({1}, {2}); ePoint ({3}, {4}) |", i, (int)allSpring[i - 1].beginPointX, (int)allSpring[i - 1].beginPointY, (int)allSpring[i - 1].endPointX, (int)allSpring[i - 1].endPointY);
-            }
-            Console.WriteLine();
+            sT.theTest(allSpring, thyme, currentCase, isInit);
         }
 
+        if (sT.hasFinished)
+        {
+            s1 = new Spring(new Vector2(100, 0), new Vector2(100, 100), 100, 50, 0.0f, 1f, 2.5f, 0.5f);
+            allSpring[0] = s1;
+            s2 = new Spring(new Vector2(100, 100), new Vector2(100, 200), 100, 50, 0.0f, 1f, 2.5f, 0f);
+            allSpring[1] = s2;
+            s3 = new Spring(new Vector2(200, 0), new Vector2(250, 200), 200, 50, 0.0f, 1f, 5, 0.5f);
+            allSpring[2] = s3;
+            sT.totalThyme = 0;
+            sT.hasFinished = false;
+        }
         // TODO: Add your update logic here
 
         base.Update(gameTime);

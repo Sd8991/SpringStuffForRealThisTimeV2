@@ -11,7 +11,9 @@ class Spring
     public double restLength, newLength, height, stiffness, radius, move, area, innerArea, length, mass;
     public double criticDamp, actualDamp, dampFactor;
     public double Fgravity, Fspring, Fres, acceleration, velocity;
+    public double angularVel, angularAcc, angle;
     public double stretch = 0.0f;
+    public bool hasStopped = false;
 
     public Spring(Vector2 beginPoint, Vector2 endPoint, int nrOfWinding, float radius, float stretch, float materialThickness, float mass, float dampFactor, float displacmentThingy = 69000, float move = 0)
     {
@@ -54,32 +56,8 @@ class Spring
         Fspring = -stiffness * stretch;
         Fres = Fgravity + Fspring - (actualDamp * velocity);
         acceleration = Fres / mass;
-        //thyme = (double)gameTime.ElapsedGameTime.Milliseconds / 1000;
         velocity = velocity + acceleration * thyme;
         endPointY = endPointY + velocity * thyme;
         stretch = endPointY - restLength;
-    }
-
-    public void CodeStash()
-    {/*
-        double upForce = -stiffness * stretch;
-        double downForce = mass * 9.81f;
-        double resultForce = upForce - downForce;
-        double acc = stretch / ((thyme * thyme));
-        double resultMass = Math.Abs(resultForce / acc);
-        float mass = 0;
-    float damping = 1;
-    //float acc = downForce / mass;;*/
-
-        /*public void VertMove()
-{
-    float oldBPoint = beginPoint.Y;
-    if (beginPoint.Y >= vMoveLowerLimit) moveDown = false;
-    if (beginPoint.Y <= vMoveUpperLimit) moveDown = true;
-    if (moveDown) beginPoint.Y++;
-    if (!moveDown) beginPoint.Y--;
-    newLength += beginPoint.Y - oldBPoint;
-    stretch = newLength - restLength;
-}*/
     }
 }
