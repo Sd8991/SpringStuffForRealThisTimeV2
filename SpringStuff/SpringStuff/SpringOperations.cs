@@ -23,7 +23,7 @@ class SpringOperations
         s1.Fres = s1.Fgravity + s1.Fspring - (s1.actualDamp * s1.velocity) - s2.Fspring + (s2.actualDamp * s2.velocity);
         s2.Fres = s2.Fgravity + s2.Fspring - (s2.actualDamp * s2.velocity);
 
-        s1.acceleration = s1.Fres / s1.mass;
+        s1.acceleration = s1.Fres / s2.mass;
         s2.acceleration = s2.Fres / s2.mass;
 
         s1.velocity = s1.velocity + s1.acceleration * thyme;

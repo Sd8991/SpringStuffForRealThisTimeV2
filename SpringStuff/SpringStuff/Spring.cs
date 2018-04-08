@@ -30,9 +30,11 @@ class Spring
         area = Math.PI * radius;
         innerArea = Math.PI * (radius - materialThickness);
         length = area * nrOfWinding;
-        stiffness = (displacmentThingy * Math.Pow(materialThickness, 4)) / (8 * nrOfWinding * Math.Pow((area - innerArea) / 2, 3));
+        if (nrOfWinding != 0)
+            stiffness = (displacmentThingy * Math.Pow(materialThickness, 4)) / (8 * nrOfWinding * Math.Pow((area - innerArea) / 2, 3));
+        else stiffness = 0;
         this.restLength = height + (mass * 9.81 / stiffness);
-        this.endPointY = endPoint.Y + 100;
+        this.endPointY = endPoint.Y;
         this.velocity = 0;
         this.acceleration = 0;
         this.Fgravity = this.mass * 9.81;
@@ -48,7 +50,7 @@ class Spring
         stretch = newLength - restLength;
     }
 
-    public void SLSMkII(double thyme, float mass = 10f, float gravity = 9.81f)//Simple Liniear Spring using Laws of Physics
+    public void SLSMkII(double thyme, float mass = 5, float gravity = 9.81f)//Simple Liniear Spring using Laws of Physics
     {
         criticDamp = Math.Sqrt(mass * stiffness) * 2;
         actualDamp = dampFactor * criticDamp;
